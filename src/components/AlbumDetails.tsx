@@ -4,7 +4,7 @@ type AlbumDetailsProps = {
   album: AlbumType;
 };
 
-function AlbumDetails({ album }: AlbumDetailsProps) {
+function AlbumDetails({ album }: AlbumDetailsProps): JSX.Element {
   return (
     <div>
       <h1>Detalhes do Álbum</h1>
