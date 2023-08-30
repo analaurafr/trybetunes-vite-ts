@@ -1,22 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import getMusics from '../services/musicsAPI';
-import Music from './Music';
 import { AlbumType, SongType } from '../types';
+import MusicCard from './MusicCard';
 
 function Album() {
   const { id } = useParams();
   const okId = id || '';
-  const [albumInfo, setAlbumInfo] = useState<{
-    artistName: string;
-    collectionName: string
-  }>({
-    artistName: '',
-    collectionName: '',
-  });
+  const [albumInfo, setAlbumInfo] = useState<AlbumType | null>(null);
 
   const [musics, setMusics] = useState<SongType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [favoriteSongs, setFavoriteSongs] = useState<SongType[]>([]);
 
   useEffect(() => {
     async function fetchAlbumAndMusics() {
@@ -41,6 +36,21 @@ function Album() {
     fetchAlbumAndMusics();
   }, [okId]);
 
+  const isMusicFavorited = (music: SongType) => {
+    return favoriteSongs.some((song) => song.trackId === music.trackId);
+  };
+
+  const handleFavoriteToggle = (music: SongType) => {
+    if (isMusicFavorited(music)) {
+      const updatedFavorites = favoriteSongs.filter(
+        (song) => song.trackId !== music.trackId,
+      );
+      setFavoriteSongs(updatedFavorites);
+    } else {
+      setFavoriteSongs([...favoriteSongs, music]);
+    }
+  };
+
   if (loading) {
     return <div>Carregando...</div>;
   }
@@ -48,16 +58,20 @@ function Album() {
   return (
     <div>
       <h1>Detalhes do Álbum</h1>
-      <p data-testid="artist-name">{albumInfo.artistName}</p>
-      <p data-testid="album-name">{albumInfo.collectionName}</p>
+      {albumInfo && (
+        <>
+          <p data-testid="artist-name">{albumInfo.artistName}</p>
+          <p data-testid="album-name">{albumInfo.collectionName}</p>
+        </>
+      )}
 
       <h2>Músicas do Álbum</h2>
       {musics.map((music) => (
-        <Music
+        <MusicCard
           key={ music.trackId }
-          trackName={ music.trackName }
-          previewUrl={ music.previewUrl }
-          trackId={ 0 }
+          music={ music }
+          isFavorite={ isMusicFavorited(music) }
+          onFavoriteToggle={ () => handleFavoriteToggle(music) }
         />
       ))}
     </div>
