@@ -24,14 +24,13 @@ function MusicCard({ music, isFavorite, onFavoriteToggle }: MusicCardProps) {
         <code>audio</code>
         .
       </audio>
-      <label
-        htmlFor={ `checkbox-music-${music.trackId}` }
+      <div
+        onClick={ handleCheckboxChange }
         onKeyDown={ (event) => {
           if (event.key === 'Enter') {
             handleCheckboxChange();
           }
         } }
-        // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
         role="checkbox"
         tabIndex={ 0 }
         aria-checked={ isFavorite }
@@ -49,7 +48,7 @@ function MusicCard({ music, isFavorite, onFavoriteToggle }: MusicCardProps) {
           alt="favorite"
           style={ { width: '20px', height: '20px' } }
         />
-      </label>
+      </div>
     </div>
   );
 }
