@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import searchAlbumsAPI from '../services/searchAlbumsAPI';
 import Carregando from './Carregando';
 import { AlbumType } from '../types';
 
 function Search() {
+  const navigate = useNavigate();
   const [artistName, setArtistName] = useState('');
   const [loading, setLoading] = useState(false);
   const [albums, setAlbums] = useState<AlbumType[]>([]);
@@ -24,11 +25,11 @@ function Search() {
         const response = await searchAlbumsAPI(artistName);
         setAlbums(response);
         setSearchedArtist(artistName);
-        setArtistName('');
       } catch (error) {
         console.error('Erro ao buscar álbuns:', error);
       } finally {
         setLoading(false);
+        setArtistName('');
       }
     }
   };
@@ -53,6 +54,7 @@ function Search() {
       >
         Pesquisar
       </button>
+
       {loading ? (
         <Carregando isLoading={ loading }>Carregando...</Carregando>
       ) : (
