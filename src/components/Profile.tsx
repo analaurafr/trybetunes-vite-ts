@@ -1,61 +1,41 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getUser } from '../services/userAPI';
-import Carregando from './Carregando';
 import { UserType } from '../types';
+import { getUser } from '../services/userAPI';
 
 function Profile() {
-  const [user, setUser] = useState<UserType | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState<UserType>();
 
   useEffect(() => {
-    async function fetchUser() {
-      try {
-        const userData = await getUser();
-        setUser(userData);
-      } catch (error) {
-        console.error('Erro ao buscar informações do usuário:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
+    const getData = async () => {
+      setIsLoading(true);
 
-    fetchUser();
+      const user = await getUser();
+      setIsLoading(false);
+      setUserInfo(user);
+    };
+    getData();
   }, []);
 
   return (
     <div>
-      <h1>Perfil</h1>
-      <Carregando isLoading={ loading }>
-        {user && user.name ? (
-          <div>
-            <p>
-              Nome:
-              {' '}
-              {user.name}
-            </p>
-            <p>
-              Email:
-              {' '}
-              {user.email}
-            </p>
-            <p>
-              Imagem:
-              {' '}
-              {user.image}
-            </p>
-            <p>
-              Descrição:
-              {' '}
-              {user.description}
-            </p>
-            <Link to="/profile/edit">Editar perfil</Link>
-            {' '}
-          </div>
-        ) : (
-          <p>Dados do perfil não encontrados.</p>
-        )}
-      </Carregando>
+      {!isLoading && userInfo ? (
+        <div>
+          <p>
+            {userInfo.name}
+          </p>
+          <img
+            data-testid="profile-image"
+            src={ userInfo.image }
+            alt={ userInfo.name }
+          />
+          <Link to="/profile/edit">Editar perfil</Link>
+          <p>{userInfo.name}</p>
+          <p>{userInfo.email}</p>
+          <p>{userInfo.description}</p>
+        </div>
+      ) : <p>Carregando...</p>}
     </div>
   );
 }
