@@ -21,7 +21,7 @@ function Album() {
     }
 
     fetchData();
-  }, []);
+  }, [id]);
 
   return (
     <div>

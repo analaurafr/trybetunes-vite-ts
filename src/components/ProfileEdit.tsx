@@ -33,9 +33,9 @@ function ProfileEdit() {
   }, []);
 
   const handleSave = async () => {
-    if (name && email && image && description) {
+    if (user && name && email && image && description) {
       const updatedUser: UserType = {
-        ...user!,
+        ...user,
         name,
         email,
         image,
