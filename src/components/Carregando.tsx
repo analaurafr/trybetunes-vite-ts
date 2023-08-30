@@ -1,5 +1,3 @@
-import React from 'react';
-
 type CarregandoProps = {
   isLoading: boolean;
   children: React.ReactNode;

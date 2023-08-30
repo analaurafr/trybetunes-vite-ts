@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getUser } from '../services/userAPI';
+import Carregando from './Carregando';
 
 function Header() {
   const [userName, setUserName] = useState<string | null>(null);
@@ -22,13 +23,14 @@ function Header() {
 
   return (
     <header data-testid="header-component">
-      {loading ? (
-        <p>Carregando...</p>
-      ) : (
-        <p data-testid="header-user-name">
-          {userName ? `Olá, ${userName}!` : 'Usuário não encontrado'}
-        </p>
-      )}
+      <Carregando isLoading={ loading }>
+        {' '}
+        {userName ? (
+          <p data-testid="header-user-name">{`Olá, ${userName}!`}</p>
+        ) : (
+          <p data-testid="header-user-name">Usuário não encontrado</p>
+        )}
+      </Carregando>
     </header>
   );
 }

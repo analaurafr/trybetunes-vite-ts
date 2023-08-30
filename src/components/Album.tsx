@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import getMusics from '../services/musicsAPI';
 import MusicCard from './MusicCard';
 import { SongType } from '../types';
 import { getFavoriteSongs } from '../services/favoriteSongsAPI';
+import Carregando from './Carregando';
 
 function Album() {
   const { id: albumId } = useParams();
@@ -61,10 +62,6 @@ function Album() {
     fetchFavoriteSongs();
   }, [okId]);
 
-  if (loading) {
-    return <div>Carregando...</div>;
-  }
-
   return (
     <div>
       <h1>Detalhes do Álbum</h1>
@@ -72,14 +69,16 @@ function Album() {
       <p data-testid="album-name">{albumInfo.collectionName}</p>
 
       <h2>Músicas do Álbum</h2>
-      {musics.map((music) => (
-        <MusicCard
-          key={ music.trackId }
-          music={ music }
-          isFavorite={ isMusicFavorited(music.trackId) }
-          onFavoriteToggle={ () => handleFavoriteToggle(music.trackId) }
-        />
-      ))}
+      <Carregando isLoading={ loading }>
+        {musics.map((music) => (
+          <MusicCard
+            key={ music.trackId }
+            music={ music }
+            isFavorite={ isMusicFavorited(music.trackId) }
+            onFavoriteToggle={ () => handleFavoriteToggle(music.trackId) }
+          />
+        ))}
+      </Carregando>
     </div>
   );
 }
