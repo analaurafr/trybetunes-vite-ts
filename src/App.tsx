@@ -5,6 +5,7 @@ import Album from './components/Album';
 import Search from './components/Search';
 import Profile from './components/Profile';
 import ProfileEdit from './components/ProfileEdit';
+import Favorites from './components/Favorites';
 
 function App() {
   return (
@@ -19,6 +20,9 @@ function App() {
       <Route path="/profile" element={ <Layout /> }>
         <Route index element={ <Profile /> } />
         <Route path="edit" element={ <ProfileEdit /> } />
+      </Route>
+      <Route path="/favorites" element={ <Layout /> }>
+        <Route index element={ <Favorites /> } />
       </Route>
     </Routes>
   );
