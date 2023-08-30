@@ -43,7 +43,7 @@ function ProfileEdit() {
       };
 
       await updateUser(updatedUser);
-      navigate('/profile');
+      navigate('/profile/edit');
     }
   };
 

@@ -3,7 +3,6 @@ import Layout from './components/Layout';
 import Login from './components/Login';
 import Album from './components/Album';
 import Search from './components/Search';
-import Favorites from './components/Favorites';
 import Profile from './components/Profile';
 import ProfileEdit from './components/ProfileEdit';
 
@@ -16,9 +15,6 @@ function App() {
       </Route>
       <Route path="/album/:id" element={ <Layout /> }>
         <Route index element={ <Album /> } />
-      </Route>
-      <Route path="/favorites" element={ <Layout /> }>
-        <Route index element={ <Favorites /> } />
       </Route>
       <Route path="/profile" element={ <Layout /> }>
         <Route index element={ <Profile /> } />

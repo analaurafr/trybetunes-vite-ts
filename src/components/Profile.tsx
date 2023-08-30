@@ -49,7 +49,7 @@ function Profile() {
               {' '}
               {user.description}
             </p>
-            <Link to="/edit-profile">Editar perfil</Link>
+            <Link to="/profile/edit">Editar perfil</Link>
             {' '}
           </div>
         ) : (

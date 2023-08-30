@@ -4,39 +4,44 @@ import checkedHeart from '../images/checked_heart.png';
 import emptyHeart from '../images/empty_heart.png';
 import { addSong, removeSong } from '../services/favoriteSongsAPI';
 
-type MusicCardProps = {
-  music: SongType;
-  isFavorite: boolean;
-  onFavoriteToggle: (trackId: number) => void;
-};
-
-function MusicCard({ music, isFavorite, onFavoriteToggle }: MusicCardProps) {
-  const [isChecked, setIsChecked] = useState(isFavorite);
-
-  const handleCheckboxChange = async () => {
-    setIsChecked(!isChecked);
-
-    if (isChecked) {
-      await removeSong({
-        trackId: music.trackId,
-        trackName: music.trackName,
-        previewUrl: music.previewUrl,
-      });
-    } else {
-      await addSong({
-        trackId: music.trackId,
-        trackName: music.trackName,
-        previewUrl: music.previewUrl,
-      });
-    }
-
-    onFavoriteToggle(music.trackId);
+function MusicCard({ trackName, previewUrl, trackId }: SongType) {
+  const [isFavorited, setIsFavorited] = useState(false);
+  const song = {
+    trackId,
+    trackName,
+    previewUrl,
   };
+
+  function handleClick() {
+    setIsFavorited(!isFavorited);
+    if (isFavorited) {
+      removeSong(song);
+    } else {
+      addSong(song);
+    }
+  }
+
+  function showImage() {
+    if (isFavorited) {
+      return (
+        <img
+          src={ checkedHeart }
+          alt="favorite"
+        />
+      );
+    }
+    return (
+      <img
+        src={ emptyHeart }
+        alt="favorite"
+      />
+    );
+  }
 
   return (
     <div>
-      <p>{music.trackName}</p>
-      <audio data-testid="audio-component" src="{previewUrl}" controls>
+      <p key={ trackId }>{ trackName }</p>
+      <audio data-testid="audio-component" src={ previewUrl } controls>
         <track kind="captions" />
         O seu navegador não suporta o elemento
         {' '}
@@ -44,31 +49,21 @@ function MusicCard({ music, isFavorite, onFavoriteToggle }: MusicCardProps) {
         <code>audio</code>
         .
       </audio>
-      <div
-        role="checkbox"
-        onClick={ handleCheckboxChange }
-        onKeyDown={ (event) => {
-          if (event.key === 'Enter') {
-            handleCheckboxChange();
-          }
-        } }
-        tabIndex={ 0 }
-        aria-checked={ isChecked }
-        style={ { cursor: 'pointer' } }
-        data-testid={ `checkbox-music-${music.trackId}` }
+
+      <label
+        htmlFor={ `checkbox-music-${trackId}` }
+        data-testid={ `checkbox-music-${trackId}` }
       >
         <input
           type="checkbox"
-          id={ `checkbox-music-${music.trackId}` }
-          checked={ isChecked }
-          onChange={ () => {} }
+          id={ `checkbox-music-${trackId}` }
+          checked={ isFavorited }
+          onChange={ handleClick }
         />
-        <img
-          src={ isChecked ? checkedHeart : emptyHeart }
-          alt="favorite"
-          style={ { width: '20px', height: '20px' } }
-        />
-      </div>
+        <div>
+          {showImage()}
+        </div>
+      </label>
     </div>
   );
 }
