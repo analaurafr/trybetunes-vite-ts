@@ -5,7 +5,6 @@ import Carregando from './Carregando';
 import { AlbumType } from '../types';
 
 function Search() {
-  const navigate = useNavigate();
   const [artistName, setArtistName] = useState('');
   const [loading, setLoading] = useState(false);
   const [albums, setAlbums] = useState<AlbumType[]>([]);
