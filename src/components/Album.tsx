@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import getMusics from '../services/musicsAPI';
 import MusicCard from './MusicCard';
 import { SongType } from '../types';
+import { getFavoriteSongs } from '../services/favoriteSongsAPI';
 
 function Album() {
   const { id: albumId } = useParams();
@@ -21,9 +22,7 @@ function Album() {
 
   const handleFavoriteToggle = (trackId: number) => {
     if (isMusicFavorited(trackId)) {
-      setFavoriteMusics(favoriteMusics.filter(
-        (id) => id !== trackId,
-      ));
+      setFavoriteMusics(favoriteMusics.filter((id) => id !== trackId));
     } else {
       setFavoriteMusics([...favoriteMusics, trackId]);
     }
@@ -48,7 +47,18 @@ function Album() {
       }
     }
 
+    async function fetchFavoriteSongs() {
+      try {
+        const favoriteSongsResponse = await getFavoriteSongs();
+        const favoriteSongIds = favoriteSongsResponse.map((song) => song.trackId);
+        setFavoriteMusics(favoriteSongIds);
+      } catch (error) {
+        console.error('Erro ao buscar músicas favoritas:', error);
+      }
+    }
+
     fetchAlbumAndMusics();
+    fetchFavoriteSongs();
   }, [okId]);
 
   if (loading) {
@@ -67,7 +77,7 @@ function Album() {
           key={ music.trackId }
           music={ music }
           isFavorite={ isMusicFavorited(music.trackId) }
-          onFavoriteToggle={ handleFavoriteToggle }
+          onFavoriteToggle={ () => handleFavoriteToggle(music.trackId) }
         />
       ))}
     </div>

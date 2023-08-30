@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { SongType } from '../types';
 import checkedHeart from '../images/checked_heart.png';
 import emptyHeart from '../images/empty_heart.png';
+import { addSong, removeSong } from '../services/favoriteSongsAPI';
 
 type MusicCardProps = {
   music: SongType;
@@ -9,7 +11,25 @@ type MusicCardProps = {
 };
 
 function MusicCard({ music, isFavorite, onFavoriteToggle }: MusicCardProps) {
-  const handleCheckboxChange = () => {
+  const [isChecked, setIsChecked] = useState(isFavorite);
+
+  const handleCheckboxChange = async () => {
+    setIsChecked(!isChecked);
+
+    if (isChecked) {
+      await removeSong({
+        trackId: music.trackId,
+        trackName: music.trackName,
+        previewUrl: music.previewUrl,
+      });
+    } else {
+      await addSong({
+        trackId: music.trackId,
+        trackName: music.trackName,
+        previewUrl: music.previewUrl,
+      });
+    }
+
     onFavoriteToggle(music.trackId);
   };
 
@@ -25,26 +45,26 @@ function MusicCard({ music, isFavorite, onFavoriteToggle }: MusicCardProps) {
         .
       </audio>
       <div
+        role="checkbox"
         onClick={ handleCheckboxChange }
         onKeyDown={ (event) => {
           if (event.key === 'Enter') {
             handleCheckboxChange();
           }
         } }
-        role="checkbox"
         tabIndex={ 0 }
-        aria-checked={ isFavorite }
+        aria-checked={ isChecked }
         style={ { cursor: 'pointer' } }
         data-testid={ `checkbox-music-${music.trackId}` }
       >
         <input
           type="checkbox"
           id={ `checkbox-music-${music.trackId}` }
-          checked={ isFavorite }
-          onChange={ handleCheckboxChange }
+          checked={ isChecked }
+          onChange={ () => {} }
         />
         <img
-          src={ isFavorite ? checkedHeart : emptyHeart }
+          src={ isChecked ? checkedHeart : emptyHeart }
           alt="favorite"
           style={ { width: '20px', height: '20px' } }
         />
